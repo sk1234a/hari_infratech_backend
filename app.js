@@ -20,7 +20,6 @@ const PORT = process.env.PORT || 5000;
 /* MIDDLEWARE */
 app.use(cors());
 app.use(express.json());
-
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -41,8 +40,8 @@ app.use("/api/contact", contactRouter);
 
 /* TEST ROUTE */
 app.get("/", (req,res)=>{
-  res.send("Hari Infratech API Running 🚀")
-})
+  res.send("Hari Infratech API Running 🚀");
+});
 
 /* SERVER START */
 app.listen(PORT, () => {
