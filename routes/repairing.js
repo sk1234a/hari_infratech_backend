@@ -15,13 +15,23 @@ router.post("/", async (req, res) => {
       VALUES ($1,$2,$3,$4,$5,$6,$7)
     `
 
-    await db.query(sql, [name, mobile, email, address, workType, propertyType, area])
+    await db.query(sql, [
+      name,
+      mobile,
+      email,
+      address,
+      worktype,
+      propertytype,
+      area
+    ])
 
     res.json({ message: "Repairing request saved" })
 
   } catch (err) {
+
     console.log(err)
     res.json(err)
+
   }
 
 })
@@ -32,9 +42,53 @@ router.get("/", async (req, res) => {
 
   try {
 
-    const result = await db.query("SELECT * FROM repairing")
+    const result = await db.query(
+      "SELECT * FROM repairing ORDER BY id DESC"
+    )
 
     res.json(result.rows)
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
+
+// DELETE REQUEST
+router.delete("/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "DELETE FROM repairing WHERE id=$1",
+      [id]
+    )
+
+    res.json({ message: "Deleted successfully" })
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
+
+// MARK AS READ
+router.put("/read/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "UPDATE repairing SET status='read' WHERE id=$1",
+      [id]
+    )
+
+    res.json({ message: "Marked as read" })
 
   } catch (err) {
     res.json(err)

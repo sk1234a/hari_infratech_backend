@@ -1,4 +1,3 @@
-
 var express = require("express")
 var router = express.Router()
 var db = require("./db")
@@ -11,12 +10,20 @@ router.post("/", async (req, res) => {
     const { name, mobile, email, address, worktype, propertytype, area } = req.body
 
     const sql = `
-      INSERT INTO contact 
-      (name, mobile, email, address, worktype, propertytype, area) 
+      INSERT INTO contact
+      (name, mobile, email, address, worktype, propertytype, area)
       VALUES ($1,$2,$3,$4,$5,$6,$7)
     `
 
-    await db.query(sql, [name, mobile, email, address, workType, propertyType, area])
+    await db.query(sql, [
+      name,
+      mobile,
+      email,
+      address,
+      worktype,
+      propertytype,
+      area
+    ])
 
     res.json({ message: "Contact form saved" })
 
@@ -32,7 +39,9 @@ router.get("/", async (req, res) => {
 
   try {
 
-    const result = await db.query("SELECT * FROM contact")
+    const result = await db.query(
+      "SELECT * FROM contact ORDER BY id DESC"
+    )
 
     res.json(result.rows)
 
@@ -42,5 +51,46 @@ router.get("/", async (req, res) => {
 
 })
 
-module.exports = router
 
+// DELETE CONTACT
+router.delete("/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "DELETE FROM contact WHERE id=$1",
+      [id]
+    )
+
+    res.json({ message: "Deleted successfully" })
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
+
+// MARK AS READ
+router.put("/read/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "UPDATE contact SET status='read' WHERE id=$1",
+      [id]
+    )
+
+    res.json({ message: "Marked as read" })
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
+module.exports = router
