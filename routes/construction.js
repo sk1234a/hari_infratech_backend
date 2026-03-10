@@ -42,5 +42,43 @@ router.get("/", async (req, res) => {
 
 })
 
+// DELETE DATA
+router.delete("/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query("DELETE FROM construction WHERE id=$1", [id])
+
+    res.json({ message: "Deleted successfully" })
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
+
+// MARK AS READ
+router.put("/read/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    await db.query(
+      "UPDATE construction SET status='read' WHERE id=$1",
+      [id]
+    )
+
+    res.json({ message: "Marked as read" })
+
+  } catch (err) {
+    res.json(err)
+  }
+
+})
+
 module.exports = router
 
